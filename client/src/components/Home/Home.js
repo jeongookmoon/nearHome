@@ -1,5 +1,6 @@
 import React from "react"
 import axios from "axios"
+import BookingForm from "./bookingForm"
 
 class Home extends React.Component {
   state = {
@@ -7,12 +8,20 @@ class Home extends React.Component {
       latitude: null,
       longitude: null
     },
-    nearByHotels: [],
+    nearByHotels: null,
     errors: []
   }
 
   componentDidMount() {
     this.getNearbyHotelData()
+  }
+
+  backendTest = async () => {
+    try {
+      await axios.get("api/hello")
+    } catch (error) {
+      this.updateError("Fetch Error: Hello Api")
+    }
   }
 
   getNearbyHotelData() {
@@ -34,9 +43,9 @@ class Home extends React.Component {
 
   positionErrorHandler = (error) => {
     if (error.code === 1)
-      this.updateError("User Position: Acess Denied")
+      this.updateError("User Location: Acess Denied")
     else if (error.code === 2)
-      this.updateError("User Position: Not Available")
+      this.updateError("User Location: Not Available")
   }
 
   fetchNearbyHotels = (position) => {
@@ -54,7 +63,7 @@ class Home extends React.Component {
 
       axios.get(apiCall).then(result => {
         // filter out auxiliary data
-        const filteredData = result.data.results.filter(eachData => eachData.hasOwnProperty("id"))
+        const filteredData = result.data.results.filter(eachData => eachData.hasOwnProperty("id") && eachData.category === "hotel")
         this.setState({
           ...this.state,
           nearByHotels: filteredData
@@ -66,14 +75,9 @@ class Home extends React.Component {
   render() {
     const { latitude, longitude } = this.state.currentPosition
     const { nearByHotels, errors } = this.state
-    if (latitude && nearByHotels.length > 0 && errors.length === 0) {
+    if (latitude && nearByHotels && errors.length === 0) {
       return (
-        <div>
-          <div>Your latitude: {latitude} and longitude: {longitude}</div>
-          {(nearByHotels.length > 0) ?
-            nearByHotels.map((hotel, index) =>
-              <div key={"hotel" + index}>{hotel.title}</div>) : <div>Loading...</div>}
-        </div>
+        <BookingForm latitude={latitude} longitude={longitude} hotelData={nearByHotels} />
       )
     } else {
       return (

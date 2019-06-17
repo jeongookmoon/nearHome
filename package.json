@@ -1,0 +1,9 @@
+{
+  "name": "nearhome",
+  "version": "1.0.0",
+  "scripts": {
+    "client": "cd client && yarn start",
+    "server": "cd server && node server.js",
+    "setupDB": "cd server/db && node setupLocalDB.js"
+  }
+}
