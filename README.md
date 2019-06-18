@@ -2,7 +2,7 @@
 
 # How to use Near Home
 1. Allow the browser to access your current location
-2. Browser will display nearby hotels
+2. Browser will display nearby hotels (via HERE REST API)
 3. Input your name, id and select any hotel and click book
 4. Once you see notification on the right, booking is successfully made
 5. If user name doesn't match with existing User Id, booking can not be completed.
