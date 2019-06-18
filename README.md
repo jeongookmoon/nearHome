@@ -1,3 +1,5 @@
+![](NearHomeDemo.gif)
+
 # How to use Near Home
 1. Allow the browser to access your current location
 2. Browser will display nearby hotels
