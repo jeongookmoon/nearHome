@@ -40,8 +40,7 @@ class searchBooking extends React.Component {
       tableHeaders = this.makeColumnHeadersForTable(flattenColumnHeaders)
       tableData = this.flattenObjectForData(bookingData)
     }
-    console.log('bookingData', bookingData)
-    this.setState({ ...this.state, bookingData, tableHeaders, tableData}, () => console.log('this.state', this.state))
+    this.setState({ ...this.state, bookingData, tableHeaders, tableData })
   }
 
   flattenObjectForHeader = (data) => {
@@ -102,7 +101,7 @@ class searchBooking extends React.Component {
     const Search = Input.Search
     const InputGroup = Input.Group
     const { Option } = Select
-    const { type, columnHeadersForTable, bookingDataForTable } = this.state
+    const { type, tableHeaders, tableData } = this.state
 
     return (
       <div style={{ margin: "auto", width: "50%" }}>
@@ -118,8 +117,8 @@ class searchBooking extends React.Component {
             enterButton
           />
         </InputGroup>
-        {(columnHeadersForTable && bookingDataForTable) ?
-          <Table columns={columnHeadersForTable} dataSource={bookingDataForTable} key={Math.random} />
+        {(tableHeaders && tableData) ?
+          <Table columns={tableHeaders} dataSource={tableData} rowKey="id" />
           : <div />}
       </div>
     )

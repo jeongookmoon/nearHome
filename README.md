@@ -5,8 +5,8 @@
 4. Once you see notification on the right, booking is successfully made
 5. If user name doesn't match with existing User Id, booking can not be completed.
 6. Booking can be searched by either property id or user id
-7. Search result displays on browser console for now
-8. Search can be tested via Postman 
+7. Search result will appear as table if exists
+7. Search API can be tested via Postman 
 ( localhost:3333, api/properties/:property_id/bookings, api/users/:user_id/bookings )
 
 ## To run locally
