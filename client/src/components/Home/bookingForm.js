@@ -1,6 +1,7 @@
 import React from "react"
 import axios from "axios"
 import { Form, Input, Icon, Radio, Button, notification } from "antd"
+import { USER_NAME_MISMATCH, BOOKING_SUCCESS } from "../../consts/apiRule"
 
 class BookingForm extends React.Component {
   constructor(props) {
@@ -12,29 +13,45 @@ class BookingForm extends React.Component {
     }
   }
 
-  openNotification = (params) => {
-    const { uid, property_name, property_id } = params
+  openNotification = (params, result) => {
+    const { city, user_id, property_name, property_id } = params
     const { name } = this.state
-    const args = {
-      message: "Booking Success",
-      description: <div>
-        <div>{name} (#id:
-                        <span style={{ color: '#3D9970' }}>{uid}</span>)
-successfully booked
-                      </div>
-        <div>{property_name} (#id:
-                        <span style={{ color: '#3D9970' }}>{property_id}</span>)
-                      </div>
-      </div>,
-      icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
-      duration: 5
+    let args = null
+    if (result === BOOKING_SUCCESS) {
+      args = {
+        message: "Booking Success",
+        description: <div>
+          <div>User Name: <strong>{name}</strong></div>
+          <div>User ID: <span style={{ color: '#108ee9' }}>{user_id}</span>
+          </div>
+          <div>Property Name: <strong>{property_name}</strong></div>
+          <div>City: <strong>{city}</strong></div>
+          <div>Property ID: <span style={{ color: '#108ee9' }}>{property_id}</span>
+          </div>
+        </div>,
+        icon: <Icon type="smile" style={{ color: '#108ee9' }} />,
+        duration: 5
+      }
+    } else {
+      args = {
+        message: "Booking Failed",
+        description:
+          <div>
+            Name ( <strong>{name}</strong> ) mismatches with
+            ( #id: <span style={{ color: '#FF851B', fontWeight: "bold" }}>{user_id}</span> )
+          </div>
+        ,
+        icon: <Icon type="meh" style={{ color: '#FF851B' }} />,
+        duration: 5
+      }
     }
+
     notification.open(args)
   }
 
-  makeBooking = event => {
+  makeBooking = async event => {
     event.preventDefault()
-    const { chosenHotel, id } = this.state
+    const { chosenHotel, id, name } = this.state
     let city = ""
     // find name of city based on pattern that it's between ">" and ","
     // but this could be wrong for some cases
@@ -47,11 +64,16 @@ successfully booked
       property_id: chosenHotel.id,
       property_name: chosenHotel.title,
       city,
-      user_id: id
+      user_id: id,
+      user_name: name
     }
-    axios.post("api/makeBooking", params).then(response => {
-      this.openNotification(params)
-    }).catch(error => console.log('makeBooking error', error))
+    const checkuser = await axios.post("api/checkAndAddUserAndAddBooking", params)
+    console.log('checkuser', checkuser.data)
+    if (checkuser.data === BOOKING_SUCCESS)
+      this.openNotification(params, BOOKING_SUCCESS)
+    else if (checkuser.data === USER_NAME_MISMATCH) {
+      this.openNotification(params, USER_NAME_MISMATCH)
+    }
   }
 
   handleChange = event => {
@@ -98,7 +120,7 @@ successfully booked
                     style={{ marginTop: "1vh" }} htmlType="hotel">{hotel.title}</Radio.Button>)
                 : <div>No Hotels Nearby</div>}
             </Radio.Group>
-            <Button type="primary" htmlType="submit" style={{ marginTop: "1vh" }}>Book</Button>
+            <Button type="primary" htmlType="submit" style={{ marginTop: "1vh", marginBottom: "1vh" }}>Book</Button>
           </Form>
         </div>
       </div>

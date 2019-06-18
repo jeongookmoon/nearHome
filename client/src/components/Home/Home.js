@@ -1,6 +1,7 @@
 import React from "react"
 import axios from "axios"
 import BookingForm from "./bookingForm"
+import SearchBooking from "./searchBooking"
 
 class Home extends React.Component {
   state = {
@@ -77,7 +78,10 @@ class Home extends React.Component {
     const { nearByHotels, errors } = this.state
     if (latitude && nearByHotels && errors.length === 0) {
       return (
-        <BookingForm latitude={latitude} longitude={longitude} hotelData={nearByHotels} />
+        <div>
+          <BookingForm latitude={latitude} longitude={longitude} hotelData={nearByHotels} />
+          <SearchBooking />
+        </div>
       )
     } else {
       return (
